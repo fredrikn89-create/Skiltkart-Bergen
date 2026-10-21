@@ -8,14 +8,14 @@
 :root {
   /* Låst lys modus: matt, svært lys beige med dempede nyanser */
   color-scheme: light;
-  --bg: #f5f1e8;
-  --panel: #faf7f0;
+  --bg: #ebe4d4;
+  --panel: #efe8da;
   --ink: #2f2a24;
-  --muted: #7a7064;
-  --line: #e6dfd2;
-  --chip: #efe9dd;
+  --muted: #73695c;
+  --line: #dcd2bf;
+  --chip: #e4dccb;
   --accent: #4f6478;      /* dempet skiltblå */
-  --accent-ink: #faf7f0;
+  --accent-ink: #f1ebdf;
   --signal: #d9b44a;      /* dempet gul */
   --warn-bg: #f3ead0;
   --warn-ink: #6b5a2a;
@@ -192,7 +192,7 @@ const SPEEDS = [[30,'#2a9d8f'],[40,'#6aa84f'],[50,'#e9c46a'],[60,'#f4a261'],[70,
 function drawSign(ctx, shape, s) {
   const c = s / 2, lw = s * 0.11;
   ctx.lineJoin = 'round';
-  const RED = '#b8323a', YEL = '#e3bd45', BLUE = '#2f5b8a', WHITE = '#fbf9f4', INK = '#2f2a24';
+  const RED = '#b8323a', YEL = '#e3bd45', BLUE = '#2f5b8a', WHITE = '#f4efe4', INK = '#2f2a24';
   ctx.clearRect(0, 0, s, s);
   if (shape === 'tri' || shape === 'yield') {
     const up = shape === 'tri';
@@ -226,8 +226,8 @@ function signCanvas(shape, size) { const cv = document.createElement('canvas'); 
 /* ---------- Tema ---------- */
 function isDark() { return false; }   // kartet er låst til lys modus
 const PAL = {
-  light: { sea: '#c9d6d8', land: '#f3efe6', forest: '#e1e4d3', scrub: '#e8e7d8', wet: '#dde3dc', rock: '#e9e4da', park: '#dde3cf', green: '#e4e6d6', residential: '#efe9de', industrial: '#ebe5dc', sand: '#efe7d3', building: '#e2dacd', buildingLine: '#d3c9b9',
-    minor: '#fbf9f4', minorCase: '#ddd4c6', major: '#efe0bd', majorCase: '#d2bf93', motorway: '#e8cba0', motorwayCase: '#c2a273', path: '#b3a896', rail: '#9c9284', label: '#5a5146', halo: '#f8f5ee', waterLabel: '#5f7a85', mask: '#f5f1e8', border: '#6b6155' },
+  light: { sea: '#c9d6d8', land: '#ebe5d6', forest: '#e1e4d3', scrub: '#e8e7d8', wet: '#dde3dc', rock: '#e2dccd', park: '#dde3cf', green: '#e4e6d6', residential: '#e6dfcf', industrial: '#e3dccd', sand: '#e8dfc8', building: '#dbd1bf', buildingLine: '#cbbfaa',
+    minor: '#f2ecdf', minorCase: '#d5cab7', major: '#efe0bd', majorCase: '#d2bf93', motorway: '#e8cba0', motorwayCase: '#c2a273', path: '#b3a896', rail: '#9c9284', label: '#5a5146', halo: '#eee7d9', waterLabel: '#5f7a85', mask: '#ebe4d4', border: '#6b6155' },
   dark: { sea: '#0d2233', land: '#18202a', forest: '#1b2a23', scrub: '#1d2620', wet: '#172a2b', rock: '#222730', park: '#1e2e22', green: '#1c2a20', residential: '#1d242d', industrial: '#221f29', sand: '#2a2719', building: '#2a3340', buildingLine: '#344050',
     minor: '#2e3946', minorCase: '#1a222c', major: '#5c4f2c', majorCase: '#3b331e', motorway: '#7a5428', motorwayCase: '#4a3418', path: '#56636f', rail: '#6b7684', label: '#c3cfdb', halo: '#0e141b', waterLabel: '#7fb2d8', mask: '#0e141b', border: '#cbd5e1' },
 };
