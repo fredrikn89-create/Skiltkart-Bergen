@@ -6,30 +6,25 @@
 <style>
 /* Layout: one-screen app. Panel left (desktop) / panel under the map (phone); the map is the page. */
 :root {
-  --bg: #f4f6f8;
-  --panel: #ffffff;
-  --ink: #14202e;
-  --muted: #5b6878;
-  --line: #dde3ea;
-  --chip: #eef2f6;
-  --accent: #0b4f9c;      /* skiltblå */
-  --accent-ink: #ffffff;
-  --signal: #f5c400;      /* gul som på fareskilt */
-  --warn-bg: #fff7d6;
-  --warn-ink: #5c4a00;
-  --shadow: 0 1px 2px rgba(20,32,46,.08), 0 6px 24px rgba(20,32,46,.10);
+  /* Låst lys modus: matt, svært lys beige med dempede nyanser */
+  color-scheme: light;
+  --bg: #f5f1e8;
+  --panel: #faf7f0;
+  --ink: #2f2a24;
+  --muted: #7a7064;
+  --line: #e6dfd2;
+  --chip: #efe9dd;
+  --accent: #4f6478;      /* dempet skiltblå */
+  --accent-ink: #faf7f0;
+  --signal: #d9b44a;      /* dempet gul */
+  --warn-bg: #f3ead0;
+  --warn-ink: #6b5a2a;
+  --shadow: 0 1px 2px rgba(60,50,35,.06), 0 4px 16px rgba(60,50,35,.06);
   --font-display: "Overpass", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Overpass", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Overpass Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0e141b; --panel: #151d26; --ink: #e6edf4; --muted: #94a3b4; --line: #26323f; --chip: #1d2732;
-  --accent: #5aa2f0; --accent-ink: #08121d; --signal: #f5c400; --warn-bg: #2b2610; --warn-ink: #f1df9a;
-  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 24px rgba(0,0,0,.35); color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0e141b; --panel: #151d26; --ink: #e6edf4; --muted: #94a3b4; --line: #26323f; --chip: #1d2732;
-  --accent: #5aa2f0; --accent-ink: #08121d; --signal: #f5c400; --warn-bg: #2b2610; --warn-ink: #f1df9a;
-  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 24px rgba(0,0,0,.35); color-scheme: dark }
+.maplibregl-ctrl-group, .maplibregl-ctrl-attrib, .maplibregl-popup-content { background: var(--panel) !important; }
 
 html, body { height: 100%; }
 [hidden] { display: none !important; }
@@ -126,7 +121,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 <div class="app">
   <aside class="panel" aria-label="Filtre">
     <header>
-      <h1><svg class="mark" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2 L24.5 22.5 H1.5 Z" fill="#f5c400" stroke="#d0141f" stroke-width="2.6" stroke-linejoin="round"/><circle cx="13" cy="15.5" r="2" fill="#14202e"/></svg>Trafikkskilt i Bergen</h1>
+      <h1><svg class="mark" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2 L24.5 22.5 H1.5 Z" fill="#e3bd45" stroke="#b8323a" stroke-width="2.6" stroke-linejoin="round"/><circle cx="13" cy="15.5" r="2" fill="#2f2a24"/></svg>Trafikkskilt i Bergen</h1>
       <p>Velg bydeler og skiltkategorier, eller søk etter et skilt, en gate eller et sted.</p>
     </header>
 
@@ -178,18 +173,18 @@ const BASE = document.baseURI.replace(/[#?].*$/, '').replace(/[^/]*$/, '');
 
 /* ---------- Skiltkategorier etter skiltforskriftens hovedgrupper ---------- */
 const CATS = [
-  { id: 1, name: 'Fareskilt',            series: '100-serien', color: '#e0a800', shape: 'tri' },
-  { id: 2, name: 'Vikeplikt og forkjørsrett', series: '200-serien', color: '#e4572e', shape: 'yield' },
-  { id: 3, name: 'Forbudsskilt',         series: '300-serien', color: '#c8102e', shape: 'ring' },
-  { id: 4, name: 'Påbudsskilt',          series: '400-serien', color: '#1d4ed8', shape: 'disc' },
-  { id: 5, name: 'Opplysningsskilt',     series: '500-serien', color: '#0b84c6', shape: 'square' },
-  { id: 6, name: 'Serviceskilt',         series: '600-serien', color: '#0f766e', shape: 'service' },
-  { id: 7, name: 'Vegvisningsskilt',     series: '700-serien', color: '#15803d', shape: 'arrow' },
-  { id: 8, name: 'Underskilt',           series: '800-serien', color: '#6b7280', shape: 'plate' },
-  { id: 9, name: 'Markeringsskilt',      series: '900-serien', color: '#8b5cf6', shape: 'chevron' },
+  { id: 1, name: 'Fareskilt',            series: '100-serien', color: '#c9a043', shape: 'tri' },
+  { id: 2, name: 'Vikeplikt og forkjørsrett', series: '200-serien', color: '#c8714f', shape: 'yield' },
+  { id: 3, name: 'Forbudsskilt',         series: '300-serien', color: '#b0484d', shape: 'ring' },
+  { id: 4, name: 'Påbudsskilt',          series: '400-serien', color: '#4f6d9a', shape: 'disc' },
+  { id: 5, name: 'Opplysningsskilt',     series: '500-serien', color: '#4f8aa6', shape: 'square' },
+  { id: 6, name: 'Serviceskilt',         series: '600-serien', color: '#4f8a80', shape: 'service' },
+  { id: 7, name: 'Vegvisningsskilt',     series: '700-serien', color: '#5f8a5a', shape: 'arrow' },
+  { id: 8, name: 'Underskilt',           series: '800-serien', color: '#8a857c', shape: 'plate' },
+  { id: 9, name: 'Markeringsskilt',      series: '900-serien', color: '#8d7aa8', shape: 'chevron' },
 ];
 const CAT_BY_ID = Object.fromEntries(CATS.map(c => [c.id, c]));
-const DISTRICT_COLORS = { 'Bergenhus': '#c2410c', 'Årstad': '#b45309', 'Fana': '#4d7c0f', 'Ytrebygda': '#0f766e', 'Fyllingsdalen': '#0369a1', 'Laksevåg': '#4338ca', 'Åsane': '#7e22ce', 'Arna': '#be123c' };
+const DISTRICT_COLORS = { 'Bergenhus': '#b36a4a', 'Årstad': '#a88447', 'Fana': '#6f8a4e', 'Ytrebygda': '#4f8a80', 'Fyllingsdalen': '#56809b', 'Laksevåg': '#6f6f9e', 'Åsane': '#8e6c9a', 'Arna': '#a65a66' };
 const DISTRICT_ORDER = ['Bergenhus', 'Årstad', 'Fana', 'Ytrebygda', 'Fyllingsdalen', 'Laksevåg', 'Åsane', 'Arna'];
 const SPEEDS = [[30,'#2a9d8f'],[40,'#6aa84f'],[50,'#e9c46a'],[60,'#f4a261'],[70,'#e76f51'],[80,'#c1121f'],[90,'#7b2cbf']];
 
@@ -197,7 +192,7 @@ const SPEEDS = [[30,'#2a9d8f'],[40,'#6aa84f'],[50,'#e9c46a'],[60,'#f4a261'],[70,
 function drawSign(ctx, shape, s) {
   const c = s / 2, lw = s * 0.11;
   ctx.lineJoin = 'round';
-  const RED = '#d0141f', YEL = '#f5c400', BLUE = '#0b4f9c', WHITE = '#ffffff', INK = '#14202e';
+  const RED = '#b8323a', YEL = '#e3bd45', BLUE = '#2f5b8a', WHITE = '#fbf9f4', INK = '#2f2a24';
   ctx.clearRect(0, 0, s, s);
   if (shape === 'tri' || shape === 'yield') {
     const up = shape === 'tri';
@@ -229,10 +224,10 @@ function drawSign(ctx, shape, s) {
 function signCanvas(shape, size) { const cv = document.createElement('canvas'); cv.width = cv.height = size; drawSign(cv.getContext('2d'), shape, size); return cv; }
 
 /* ---------- Tema ---------- */
-function isDark() { const t = document.documentElement.dataset.theme; if (t) return t === 'dark'; return matchMedia('(prefers-color-scheme: dark)').matches; }
+function isDark() { return false; }   // kartet er låst til lys modus
 const PAL = {
-  light: { sea: '#a9cbe3', land: '#eef0ec', forest: '#d6e5d0', scrub: '#e2e9d6', wet: '#d5e6e4', rock: '#e4e2de', park: '#cfe6c4', green: '#dcebd2', residential: '#e8e7e4', industrial: '#e6e1e8', sand: '#efe6c8', building: '#d8d4ce', buildingLine: '#c4bfb7',
-    minor: '#ffffff', minorCase: '#cfd4da', major: '#fde7a6', majorCase: '#d8b65c', motorway: '#f7b867', motorwayCase: '#c9832c', path: '#9aa5b1', rail: '#7d8792', label: '#3d4a59', halo: '#ffffff', waterLabel: '#2f6286', mask: '#f4f6f8', border: '#334155' },
+  light: { sea: '#c9d6d8', land: '#f3efe6', forest: '#e1e4d3', scrub: '#e8e7d8', wet: '#dde3dc', rock: '#e9e4da', park: '#dde3cf', green: '#e4e6d6', residential: '#efe9de', industrial: '#ebe5dc', sand: '#efe7d3', building: '#e2dacd', buildingLine: '#d3c9b9',
+    minor: '#fbf9f4', minorCase: '#ddd4c6', major: '#efe0bd', majorCase: '#d2bf93', motorway: '#e8cba0', motorwayCase: '#c2a273', path: '#b3a896', rail: '#9c9284', label: '#5a5146', halo: '#f8f5ee', waterLabel: '#5f7a85', mask: '#f5f1e8', border: '#6b6155' },
   dark: { sea: '#0d2233', land: '#18202a', forest: '#1b2a23', scrub: '#1d2620', wet: '#172a2b', rock: '#222730', park: '#1e2e22', green: '#1c2a20', residential: '#1d242d', industrial: '#221f29', sand: '#2a2719', building: '#2a3340', buildingLine: '#344050',
     minor: '#2e3946', minorCase: '#1a222c', major: '#5c4f2c', majorCase: '#3b331e', motorway: '#7a5428', motorwayCase: '#4a3418', path: '#56636f', rail: '#6b7684', label: '#c3cfdb', halo: '#0e141b', waterLabel: '#7fb2d8', mask: '#0e141b', border: '#cbd5e1' },
 };
@@ -284,7 +279,7 @@ function buildStyle() {
       { id: 'district-label', type: 'symbol', source: 'bydeler', maxzoom: 12.5, filter: ['==', ['geometry-type'], 'Point'], layout: { 'text-field': ['upcase', ['get', 'navn']], 'text-font': ['Inter-SemiBold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 9, 11, 12, 15], 'text-letter-spacing': 0.12 }, paint: { 'text-color': ['get', 'farge'], 'text-halo-color': p.halo, 'text-halo-width': 2 } },
       { id: 'sign-dot', type: 'circle', source: 'skilt', maxzoom: 16, paint: { 'circle-color': ['get', 'farge'], 'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 1.6, 13, 3, 16, 5], 'circle-stroke-color': p.halo, 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 10, 0.3, 14, 1.2] } },
       { id: 'sign-icon', type: 'symbol', source: 'skilt', minzoom: 16, layout: { 'icon-image': ['concat', 'kat-', ['to-string', ['get', 'kat']]], 'icon-size': ['interpolate', ['linear'], ['zoom'], 16, 0.55, 19, 0.9], 'icon-allow-overlap': true, 'text-field': ['get', 'kode'], 'text-font': ['Inter-SemiBold'], 'text-size': 10, 'text-offset': [0, 1.5], 'text-optional': true }, paint: { 'text-color': p.label, 'text-halo-color': p.halo, 'text-halo-width': 1.4 } },
-      { id: 'hit', type: 'circle', source: 'treff', paint: { 'circle-radius': 9, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': isDark() ? '#5aa2f0' : '#0b4f9c', 'circle-stroke-width': 3 } },
+      { id: 'hit', type: 'circle', source: 'treff', paint: { 'circle-radius': 9, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': '#4f6478', 'circle-stroke-width': 3 } },
     ],
   };
 }
