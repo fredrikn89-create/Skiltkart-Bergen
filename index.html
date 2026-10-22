@@ -80,7 +80,8 @@ header p { margin: 6px 0 0; color: var(--muted); line-height: 1.45; }
 .cat:hover { background: var(--chip); }
 .cat .name { font-weight: 600; line-height: 1.2; }
 .cat .series { font-family: var(--font-mono); font-size: 11px; color: var(--muted); display: block; font-weight: 400; }
-.cat .count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cat .count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.cat .count b { color: var(--ink); font-weight: 600; }
 .cat .tog { width: 30px; height: 18px; border-radius: 9px; background: var(--line); position: relative; transition: background .15s; }
 .cat .tog::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--panel); transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
 .cat[aria-pressed="true"] .tog { background: var(--accent); }
@@ -148,6 +149,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
     <section>
       <h2 class="section-label">Skiltkategorier <button id="toggleCats" type="button">Skjul alle</button></h2>
       <div class="cats" id="cats"></div>
+      <p class="hint">Tallene viser skilt i kartutsnittet / totalt, og endres når du zoomer eller flytter kartet.</p>
     </section>
 
     <section>
@@ -412,9 +414,25 @@ function renderCats() {
   catsEl.innerHTML = CATS.map(c => `<button type="button" class="cat" data-c="${c.id}" aria-pressed="${STATE.cats.has(c.id)}" title="Vis eller skjul ${c.name.toLowerCase()}">
     <img class="icon" src="${iconURL[c.id]}" alt="">
     <span><span class="name">${c.name}</span><span class="series">${c.series}</span></span>
-    <span class="count">${STATE.signsLoaded ? fmt(counts.get(c.id) || 0) : '–'}</span><span class="tog" aria-hidden="true"></span></button>`).join('');
+    <span class="count" data-c="${c.id}" data-tot="${counts.get(c.id) || 0}">${STATE.signsLoaded ? fmt(counts.get(c.id) || 0) : '–'}</span><span class="tog" aria-hidden="true"></span></button>`).join('');
   document.getElementById('toggleCats').textContent = STATE.cats.size ? 'Skjul alle' : 'Vis alle';
+  updateViewCounts();
 }
+/* Teller per kategori for det synlige kartutsnittet: «i utsnittet / totalt» */
+function updateViewCounts() {
+  if (!STATE.signsLoaded || typeof map === 'undefined') return;
+  const b = map.getBounds(), w = b.getWest(), e = b.getEast(), so = b.getSouth(), n = b.getNorth();
+  const counts = new Map();
+  for (const s of STATE.signs) {
+    if (s.lon < w || s.lon > e || s.lat < so || s.lat > n) continue;
+    if (STATE.districts.size && !STATE.districts.has(s.bydel)) continue;
+    if (STATE.code && s.kode !== STATE.code) continue;
+    counts.set(s.kat, (counts.get(s.kat) || 0) + 1);
+  }
+  catsEl.querySelectorAll('.count').forEach(el => { el.innerHTML = `<b>${fmt(counts.get(+el.dataset.c) || 0)}</b> / ${fmt(+el.dataset.tot)}`; el.title = 'Skilt i kartutsnittet / totalt'; });
+}
+let viewRaf = 0;
+map.on('move', () => { if (!viewRaf) viewRaf = requestAnimationFrame(() => { viewRaf = 0; updateViewCounts(); }); });
 catsEl.addEventListener('click', e => {
   const b = e.target.closest('.cat'); if (!b) return; const id = +b.dataset.c;
   if (e.altKey) { STATE.cats = new Set([id]); }
