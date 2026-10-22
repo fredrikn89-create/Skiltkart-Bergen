@@ -478,6 +478,7 @@ function choose(h) {
   else if (h.type === 'bydel') { STATE.districts = new Set([h.d]); q.value = ''; update(); fitDistricts(); }
   else {
     const p = h.place; q.value = p[0];
+    if (STATE.districts.size) { STATE.districts = new Set(); update(); }   // et valgt sted opphever bydelsfilteret
     map.getSource('treff')?.setData({ type: 'Feature', geometry: { type: 'Point', coordinates: [p[2], p[3]] }, properties: {} });
     if (p[5]) map.fitBounds([[p[5][0], p[5][1]], [p[5][2], p[5][3]]], { padding: 80, maxZoom: 17, duration: 900 });
     else map.flyTo({ center: [p[2], p[3]], zoom: 15.5, duration: 900 });
